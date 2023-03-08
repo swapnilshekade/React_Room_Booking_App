@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Datewise Data for 4 Rooms</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      select {
+        margin-bottom: 20px;
+      }
+
+      table {
+        margin: auto;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+      }
+
+      th {
+        font-weight: bold;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Datewise Data for 4 Rooms</h1>
+    <div>
+      <label for="month-select">Select a month:</label>
+      <select id="month-select">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Room</th>
+          <th id="date-headers"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Room 1</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Room 2</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Room 3</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Room 4</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+    </table>
+    <button id="export-btn">Export to Excel</button>
+
+    <script>
+      // get references to the table and date headers
+      // get references to the table and date headers
+const table = document.querySelector("table");
+const dateHeadersRow = table.querySelector("thead tr");
+const dateHeaders = table.querySelector("#date-headers");
+
+// generate an array of dates based on the selected month
+const generateDates = (month) => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const lastDayOfMonth = new Date(year, month, 0).getDate(); // get last day of month
+  const datesArray = [];
+
+  for (let i = 1; i <= lastDayOfMonth; i++) {
+    datesArray.push(`${year}-${month.toString().padStart(2, "0")}-${i.toString().padStart(2, "0")}`);
+  }
+
+  return datesArray;
+};
+
+// update the date headers with the selected month's dates
+const updateDateHeaders = () => {
+  const selectedMonth = document.querySelector("#month-select").value;
+  dateHeaders.innerHTML = generateDates(selectedMonth).map((date) => `<th>${date}</th>`).join("");
+};
+
+// update the table with null data for each cell
+const updateTable = () => {
+  const numRows = table.rows.length;
+  const numCols = table.rows[0].cells.length;
+
+  for (let i = 1; i < numRows; i++) {
+    for (let j = 1; j < numCols; j++) {
+      table.rows[i].cells[j].textContent = "null";
+    }
+  }
+};
+
+// add event listener to the month select dropdown
+document.querySelector("#month-select").addEventListener("change", () => {
+  updateDateHeaders();
+  updateTable();
+});
+
+// initialize the table with the current month's dates and null data
+dateHeaders.innerHTML = generateDates(new Date().getMonth() + 1).map((date) => `<th>${date}</th>`).join("");
+updateTable();
